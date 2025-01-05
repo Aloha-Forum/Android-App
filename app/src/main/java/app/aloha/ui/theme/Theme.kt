@@ -39,6 +39,11 @@ private val DarkColorScheme = darkColorScheme(
     inverseOnSurface = Color(0xFF000000),
     inversePrimary = Color(0xFF002F35),
     surfaceTint = Color(0xFF82D3E0),
+    surfaceContainerLowest = Color(0xFF090F10),
+    surfaceContainerLow = Color(0xFF303637),
+    surfaceContainer = Color(0xFF1B2221),
+    surfaceContainerHigh = Color(0xFF252B2C),
+    surfaceContainerHighest = Color(0xFF303637)
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -68,7 +73,12 @@ private val LightColorScheme = lightColorScheme(
     inverseSurface = Color(0xFF2B3133),
     inverseOnSurface = Color(0xFFECF2F3),
     inversePrimary = Color(0xFF82D3E0),
-    surfaceTint = Color(0xFF006874)
+    surfaceTint = Color(0xFF006874),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFEFF5F6),
+    surfaceContainer = Color(0xFFE9EFF0),
+    surfaceContainerHigh = Color(0xFFE3E9EA),
+    surfaceContainerHighest = Color(0xFFDEE3E5)
 )
 
 @Composable
@@ -79,10 +89,10 @@ fun AlohaForumTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+//            val context = LocalContext.current
+//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+//        }
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
