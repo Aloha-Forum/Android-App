@@ -61,6 +61,11 @@ dependencies {
     implementation(libs.dagger)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.okhttp)
+    implementation(libs.retrofit2.retrofit)
+    kapt(libs.retrofit)
+    implementation(libs.gson)
+    kapt(libs.converter.gson)
+    implementation(libs.converter.gson.v290)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
