@@ -2,6 +2,7 @@ package app.aloha.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,9 +12,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -28,33 +32,37 @@ data class CardInfo (
 fun Card(
     title: String,
     body: String,
-    props: Array<CardInfo>
+    props: Array<CardInfo> = arrayOf(),
+    onClick: () -> Unit = {}
 ) {
-    Column(
-        Modifier
-            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(15.dp))
-            .padding(24.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleMedium,
-        )
-
-        if (body.isNotEmpty()) {
+    Surface(shape = RoundedCornerShape(15.dp), shadowElevation = 4.dp) {
+        Column(
+            Modifier
+                .clickable(onClick = onClick)
+                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(15.dp))
+                .padding(24.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                body,
-                Modifier.heightIn(max = 60.dp),
+                text = title,
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodySmall,
-                overflow = TextOverflow.Ellipsis
+                style = MaterialTheme.typography.titleMedium,
             )
-        }
 
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            props.forEach { IconText(it.drawable, it.value, it.contentDescription) }
+            if (body.isNotEmpty()) {
+                Text(
+                    body,
+                    Modifier.heightIn(max = 60.dp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                props.forEach { IconText(it.drawable, it.value, it.contentDescription) }
+            }
         }
     }
 }
