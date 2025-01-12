@@ -5,14 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,18 +27,11 @@ class MainActivity : ComponentActivity() {
             AlohaForumTheme {
                 val navController = rememberNavController()
 
-                Scaffold(
-                    Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigationBar(navController) }
-                ) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = Page.Home.route,
-                        modifier = Modifier.padding(innerPadding).padding(12.dp)
-                    ) {
-                        composable(Page.Home.route) { HomePage() }
-                        composable(Page.Explore.route) { ExplorePage() }
-                        composable(Page.Profile.route) { ProfilePage() }
+                Scaffold(bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
+                    NavHost(navController, Page.Home.route) {
+                        composable(Page.Home.route) { HomePage(Modifier.padding(innerPadding)) }
+                        composable(Page.Explore.route) { ExplorePage(Modifier.padding(innerPadding)) }
+                        composable(Page.Profile.route) { ProfilePage(Modifier.padding(innerPadding)) }
                     }
                 }
             }
@@ -51,8 +39,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-sealed class Page(val route: String, val title: String, @DrawableRes val activeIcon: Int, @DrawableRes val inActiveIcon: Int) {
-    data object Home : Page("home", "Home", R.drawable.ic_home_fill, R.drawable.ic_home)
-    data object Explore : Page("explore", "Explore", R.drawable.ic_explore_fill, R.drawable.ic_explore)
-    data object Profile : Page("profile", "Profile", R.drawable.ic_person_fill, R.drawable.ic_person)
+sealed class Page(
+    val route: String,
+    val title: String,
+    @DrawableRes val activeIcon: Int,
+    @DrawableRes val inActiveIcon: Int
+) {
+    data object Home : Page("Home", "Home", R.drawable.ic_home_fill, R.drawable.ic_home)
+    data object Explore : Page("Explore", "Explore", R.drawable.ic_explore_fill, R.drawable.ic_explore)
+    data object Profile : Page("Profile", "Profile", R.drawable.ic_person_fill, R.drawable.ic_person)
 }

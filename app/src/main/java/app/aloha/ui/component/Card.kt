@@ -39,29 +39,46 @@ fun Card(
         Column(
             Modifier
                 .clickable(onClick = onClick)
-                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(15.dp))
-                .padding(24.dp)
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainerLow,
+                    RoundedCornerShape(15.dp)
+                )
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleMedium,
+            Title(
+                title,
+                Modifier
+                    .padding(start = 24.dp, end = 24.dp, top = 24.dp,
+                    )
+                    .heightIn(max = 80.dp),
             )
 
             if (body.isNotEmpty()) {
                 Text(
                     body,
-                    Modifier.heightIn(max = 60.dp),
+                    Modifier
+                        .padding(
+                            start = 24.dp, end = 24.dp,
+                            bottom = if (props.isNotEmpty()) 0.dp else 24.dp
+                        )
+                        .heightIn(max = 60.dp),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     overflow = TextOverflow.Ellipsis
                 )
             }
 
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                props.forEach { IconText(it.drawable, it.value, it.contentDescription) }
+            if (props.isNotEmpty()) {
+                FlowRow(
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    props.forEach { IconText(it.drawable, it.value, it.contentDescription) }
+                }
             }
         }
     }
