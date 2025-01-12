@@ -1,15 +1,11 @@
 package app.aloha.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFF1FDFF),
@@ -33,15 +29,15 @@ private val DarkColorScheme = darkColorScheme(
     surface = Color(0xFF0E1415),
     onSurface = Color(0xFFFFFFFF),
     surfaceVariant = Color(0xFF3F484A),
-    onSurfaceVariant = Color(0xFFF3FCFE),
+    onSurfaceVariant = Color(0xFF3F484A),
     outline = Color(0xFFC3CCCE),
     inverseSurface = Color(0xFFDEE3E5),
     inverseOnSurface = Color(0xFF000000),
     inversePrimary = Color(0xFF002F35),
     surfaceTint = Color(0xFF82D3E0),
     surfaceContainerLowest = Color(0xFF090F10),
-    surfaceContainerLow = Color(0xFF303637),
-    surfaceContainer = Color(0xFF1B2221),
+    surfaceContainerLow = Color(0xFF171D1E),
+    surfaceContainer = Color(0xFF1B2122),
     surfaceContainerHigh = Color(0xFF252B2C),
     surfaceContainerHighest = Color(0xFF303637)
 )
