@@ -17,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,13 +28,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import app.aloha.activity.AuthActivity
 import app.aloha.R
+import app.aloha.domain.getNextTheme
+import app.aloha.domain.getThemeName
 import app.aloha.ui.component.AppBarNavIcon
 import app.aloha.ui.component.TopAppBar
+import app.aloha.viewmodel.SettingViewModel
 
 @Composable
 fun ProfilePage(modifier: Modifier = Modifier) {
+    val settVM: SettingViewModel = hiltViewModel()
+
     Column {
         val activity = LocalContext.current as? Activity
         Box(
@@ -56,7 +65,9 @@ fun ProfilePage(modifier: Modifier = Modifier) {
             )
 
             SettingButton("Account Info", R.drawable.ic_person_search, "Account Info Icon")
-            SettingButton("App Theme", R.drawable.ic_theme, "Theme Icon")
+
+            ThemeSettingButton()
+
 
             HorizontalDivider(Modifier.padding(bottom = 12.dp))
             Text(
@@ -75,12 +86,13 @@ fun ProfilePage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SettingButton(
+private fun SettingButton(
     text: String,
     @DrawableRes iconRes: Int,
     contentDescription: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    data: String? = null,
     onClick: () -> Unit = { }
 ) {
     Row(
@@ -91,13 +103,33 @@ fun SettingButton(
             .clickable { onClick() }
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.SpaceBetween,
+
     ) {
-        Icon(
-            ImageVector.vectorResource(iconRes),
-            contentDescription,
-            tint = color
-        )
-        Text(text, color=color)
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Icon(
+                ImageVector.vectorResource(iconRes),
+                contentDescription,
+                tint = color
+            )
+            Text(text, color=color)
+        }
+        data?.let {
+            Text(it, style = MaterialTheme.typography.labelMedium)
+        }
     }
+}
+
+@Composable
+private fun ThemeSettingButton(modifier: Modifier = Modifier) {
+    val settVM: SettingViewModel = hiltViewModel()
+    val theme by settVM.getTheme().collectAsState(null)
+
+    SettingButton(
+        "Themed",
+        R.drawable.ic_theme, "Theme Icon",
+        modifier,
+        data = getThemeName(theme),
+        onClick = { settVM.setTheme(getNextTheme(theme)) }
+    )
 }

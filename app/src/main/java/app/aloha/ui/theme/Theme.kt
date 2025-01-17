@@ -5,7 +5,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
+import app.aloha.viewmodel.SettingViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.single
+import okhttp3.Dispatcher
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFF1FDFF),
@@ -78,20 +85,14 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun AlohaForumTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//            val context = LocalContext.current
-//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//        }
+fun AlohaForumTheme(content: @Composable () -> Unit) {
+    val settVM: SettingViewModel = viewModel()
+    val theme by settVM.getTheme().collectAsState(null)
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    val colorScheme = when (theme) {
+        true -> DarkColorScheme
+        false -> LightColorScheme
+        else -> if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
     }
 
     MaterialTheme(
