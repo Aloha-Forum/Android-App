@@ -1,6 +1,5 @@
 package app.aloha.viewmodel
 
-import android.app.Activity.RESULT_CANCELED
 import android.content.Context
 import android.content.Intent
 import androidx.datastore.preferences.core.edit
@@ -9,11 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.aloha.dataStore
 import app.aloha.domain.GoogleOAuth
+import app.aloha.internet.model.User
 import app.aloha.internet.service.AuthApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationRequest
@@ -35,7 +33,7 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
     private val dataStore = context.dataStore
 
-    private val authService = AuthorizationService(context)
+    private val service = AuthorizationService(context)
 
     val authIntent: Intent
         get() {
@@ -45,48 +43,92 @@ class AuthViewModel @Inject constructor(
                 .setScopes("openid", "profile", "email")
                 .build()
 
-            return authService.getAuthorizationRequestIntent(req)
+            return service.getAuthorizationRequestIntent(req)
         }
 
-    fun exchangeToken(response: AuthorizationResponse, callback: AuthResultCallback) {
-        authService.performTokenRequest(response.createTokenExchangeRequest()) { tokenResponse, exception ->
-            if (tokenResponse?.accessToken != null) {
-                apiClient.create(AuthApiService::class.java)
-                    .loginWithGoogle(tokenResponse.accessToken!!)
-                    .enqueue(object : Callback<Void> {
-                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                            if (response.isSuccessful) {
-                                setAccessToken(tokenResponse.accessToken!!)
-                                callback.onSuccess()
-                            }
-                            else
-                                callback.onFailure()
-                        }
-
-                        override fun onFailure(call: Call<Void>, t: Throwable) {
-                            callback.onFailure()
-                        }
-                    })
-            }
+    fun getAccessToken(res: AuthorizationResponse, callBack: TokenCallback) {
+        service.performTokenRequest(res.createTokenExchangeRequest()) { serviceRes, e ->
+            if (serviceRes?.accessToken != null)
+                callBack.onSuccess(serviceRes.accessToken!!)
             else
-                callback.onFailure()
+                callBack.onFailure(e.toString())
         }
+    }
+
+    fun login(token: String, callback: LoginCallback) {
+        apiClient.create(AuthApiService::class.java)
+            .login(token)
+            .enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    if (response.isSuccessful) {
+                        callback.onSuccess()
+                        setUserData(response.body()!!, token)
+                    }
+                    else
+                        callback.onFailure()
+                }
+
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    callback.onFailure()
+                }
+            })
+    }
+
+    fun signup(token: String, uid: String, callback: SignupCallback) {
+        apiClient.create(AuthApiService::class.java)
+            .signup(token, uid)
+            .enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    if (response.isSuccessful) {
+                        callback.onSuccess()
+                        setUserData(response.body()!!, token)
+                    }
+                    else
+                        callback.onFailure()
+                }
+
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    callback.onFailure()
+                }
+
+            })
     }
 
     fun getAccessToken() {
         dataStore.data.map { it[stringPreferencesKey("accessToken")] }
     }
 
-    private fun setAccessToken(token: String) {
+    fun getUserData() {
+        dataStore.data.map {
+            User(
+                it[stringPreferencesKey("id")]!!,
+                it[stringPreferencesKey("email")]!!
+            )
+        }
+    }
+
+    private fun setUserData(user: User, token: String) {
         viewModelScope.launch {
             dataStore.edit { preferences ->
                 preferences[stringPreferencesKey("accessToken")] = token
+                preferences[stringPreferencesKey("email")] = user.email
+                preferences[stringPreferencesKey("uid")] = user.id
             }
         }
     }
 }
 
-interface AuthResultCallback {
+interface TokenCallback {
+    fun onSuccess(token: String)
+    fun onFailure(message: String? = null)
+}
+
+interface LoginCallback {
+    fun onSuccess()
+    fun onFailure(message: String? = null)
+}
+
+interface SignupCallback {
     fun onSuccess()
     fun onFailure(message: String? = null)
 }
