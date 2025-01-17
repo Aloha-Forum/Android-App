@@ -13,12 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 data class CardInfo (
@@ -55,7 +51,7 @@ fun Card(
             )
 
             if (body.isNotEmpty()) {
-                Text(
+                BodyText(
                     body,
                     Modifier
                         .padding(
@@ -63,9 +59,6 @@ fun Card(
                             bottom = if (props.isNotEmpty()) 0.dp else 24.dp
                         )
                         .heightIn(max = 60.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.bodyMedium,
-                    overflow = TextOverflow.Ellipsis
                 )
             }
 

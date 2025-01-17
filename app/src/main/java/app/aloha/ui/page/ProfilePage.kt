@@ -35,13 +35,15 @@ import app.aloha.R
 import app.aloha.domain.getNextTheme
 import app.aloha.domain.getThemeName
 import app.aloha.ui.component.AppBarNavIcon
+import app.aloha.ui.component.BodyText
+import app.aloha.ui.component.Label
+import app.aloha.ui.component.SettingButton
+import app.aloha.ui.component.ThemeSettingButton
 import app.aloha.ui.component.TopAppBar
 import app.aloha.viewmodel.SettingViewModel
 
 @Composable
 fun ProfilePage(modifier: Modifier = Modifier) {
-    val settVM: SettingViewModel = hiltViewModel()
-
     Column {
         val activity = LocalContext.current as? Activity
         Box(
@@ -57,25 +59,15 @@ fun ProfilePage(modifier: Modifier = Modifier) {
             modifier.padding(24.dp, 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                "General",
-                color= MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold
-            )
-
+            Label("General", fontWeight = FontWeight.Bold)
             SettingButton("Account Info", R.drawable.ic_person_search, "Account Info Icon")
 
-            ThemeSettingButton()
-
+            ThemeSettingButton( )
 
             HorizontalDivider(Modifier.padding(bottom = 12.dp))
-            Text(
-                "System",
-                color= MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold
-            )
+
+            Label("System", fontWeight = FontWeight.Bold)
+
             SettingButton("Our GitHub", R.drawable.ic_github, "GitHub Icon")
 
             SettingButton("Privacy Policy", R.drawable.ic_policy, "Privacy Icon")
@@ -83,53 +75,4 @@ fun ProfilePage(modifier: Modifier = Modifier) {
             SettingButton("App Info", R.drawable.ic_construct, "GitHub Icon")
         }
     }
-}
-
-@Composable
-private fun SettingButton(
-    text: String,
-    @DrawableRes iconRes: Int,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    data: String? = null,
-    onClick: () -> Unit = { }
-) {
-    Row(
-        modifier
-            .height(48.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .clickable { onClick() }
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-
-    ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(
-                ImageVector.vectorResource(iconRes),
-                contentDescription,
-                tint = color
-            )
-            Text(text, color=color)
-        }
-        data?.let {
-            Text(it, style = MaterialTheme.typography.labelMedium)
-        }
-    }
-}
-
-@Composable
-private fun ThemeSettingButton(modifier: Modifier = Modifier) {
-    val settVM: SettingViewModel = hiltViewModel()
-    val theme by settVM.getTheme().collectAsState(null)
-
-    SettingButton(
-        "Themed",
-        R.drawable.ic_theme, "Theme Icon",
-        modifier,
-        data = getThemeName(theme),
-        onClick = { settVM.setTheme(getNextTheme(theme)) }
-    )
 }
