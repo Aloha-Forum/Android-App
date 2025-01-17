@@ -1,4 +1,4 @@
-package app.aloha
+package app.aloha.activity
 
 import android.app.Activity
 import android.os.Bundle
@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.aloha.R
 import app.aloha.domain.timeLagFromCurrent
 import app.aloha.ui.component.TopAppBar
 import app.aloha.ui.component.AppBarNavIcon

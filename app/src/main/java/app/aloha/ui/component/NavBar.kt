@@ -12,7 +12,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import app.aloha.Page
+import app.aloha.activity.Page
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {

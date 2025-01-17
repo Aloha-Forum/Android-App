@@ -1,4 +1,4 @@
-package app.aloha
+package app.aloha.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.aloha.R
 import app.aloha.ui.component.BottomNavigationBar
 import app.aloha.ui.page.ExplorePage
 import app.aloha.ui.page.HomePage
@@ -46,6 +47,12 @@ sealed class Page(
     @DrawableRes val inActiveIcon: Int
 ) {
     data object Home : Page("Home", "Home", R.drawable.ic_home_fill, R.drawable.ic_home)
-    data object Explore : Page("Explore", "Explore", R.drawable.ic_explore_fill, R.drawable.ic_explore)
-    data object Profile : Page("Profile", "Profile", R.drawable.ic_person_fill, R.drawable.ic_person)
+    data object Explore : Page("Explore", "Explore",
+        R.drawable.ic_explore_fill,
+        R.drawable.ic_explore
+    )
+    data object Profile : Page("Profile", "Profile",
+        R.drawable.ic_person_fill,
+        R.drawable.ic_person
+    )
 }

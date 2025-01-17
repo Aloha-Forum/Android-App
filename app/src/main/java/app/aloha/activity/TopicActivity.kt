@@ -1,4 +1,4 @@
-package app.aloha
+package app.aloha.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.aloha.R
 import app.aloha.domain.timeLagFromCurrent
 import app.aloha.ui.component.TopAppBar
 import app.aloha.ui.component.Card

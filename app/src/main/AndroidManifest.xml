@@ -22,23 +22,23 @@
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".AuthActivity"
+            android:name=".activity.AuthActivity"
             android:exported="false"
             android:label="@string/title_activity_auth"
             android:theme="@style/Theme.AlohaForum">
         </activity>
         <activity
-            android:name=".PostActivity"
+            android:name=".activity.PostActivity"
             android:exported="false"
             android:label="@string/title_activity_post"
             android:theme="@style/Theme.AlohaForum" />
         <activity
-            android:name=".TopicActivity"
+            android:name=".activity.TopicActivity"
             android:exported="false"
             android:label="@string/title_activity_topic"
             android:theme="@style/Theme.AlohaForum" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AlohaForum">
             <intent-filter>

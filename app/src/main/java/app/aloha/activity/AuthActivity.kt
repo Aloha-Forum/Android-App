@@ -1,4 +1,4 @@
-package app.aloha
+package app.aloha.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
