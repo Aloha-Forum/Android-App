@@ -1,6 +1,8 @@
 package app.aloha.ui.component
 
+import android.content.Intent
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,22 +20,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.aloha.R
+import app.aloha.activity.WebViewActivity
 import app.aloha.domain.getNextTheme
 import app.aloha.domain.getThemeName
 import app.aloha.viewmodel.SettingViewModel
 
 @Composable
-fun ThemeSettingButton(modifier: Modifier = Modifier) {
+fun ThemeButton(modifier: Modifier = Modifier) {
     val settVM: SettingViewModel = hiltViewModel()
     val theme by settVM.getTheme().collectAsState(null)
 
-    SettingButton(
+    ProfileButton(
         "Themed",
-        R.drawable.ic_theme, "Theme Icon",
+        R.drawable.ic_theme, "Switch the current color scheme",
         modifier,
         data = getThemeName(theme),
         onClick = { settVM.setTheme(getNextTheme(theme)) }
@@ -41,7 +45,45 @@ fun ThemeSettingButton(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SettingButton(
+fun GitHubButton(modifier: Modifier = Modifier) {
+    WebViewButton(
+        "Our GitHub",
+        R.drawable.ic_github, "Open the GitHub repository of this app",
+        R.string.github_url,
+        modifier
+    )
+}
+
+@Composable
+fun PrivacyPolicyButton(modifier: Modifier = Modifier) {
+    WebViewButton(
+        "Privacy Policy",
+        R.drawable.ic_policy, "Open privacy policy page",
+        R.string.privacy_policy_url,
+        modifier
+    )
+}
+
+@Composable
+private fun WebViewButton(
+    text: String,
+    @DrawableRes iconRes: Int,
+    contentDescription: String,
+    @StringRes url: Int,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+
+    ProfileButton(text, iconRes, contentDescription, modifier) {
+        val intent = Intent(context, WebViewActivity::class.java)
+            .putExtra("url", context.resources.getString(url))
+
+        context.startActivity(intent)
+    }
+}
+
+@Composable
+fun ProfileButton(
     text: String,
     @DrawableRes iconRes: Int,
     contentDescription: String,

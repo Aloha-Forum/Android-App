@@ -10,6 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        manifestPlaceholders += mapOf()
         applicationId = "app.aloha"
         minSdk = 24
         targetSdk = 34

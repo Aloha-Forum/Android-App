@@ -3,4 +3,7 @@
     <string name="title_activity_topic">TopicActivity</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="title_activity_auth">AuthActivity</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="privacy_policy_url">https://www.termsfeed.com/live/aabdccc1-6d24-4a00-a7e9-0af3d543cc04</string>
+    <string name="github_url">https://github.com/Aloha-Forum/Android-App</string>
 </resources>
