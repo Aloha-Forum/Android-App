@@ -69,44 +69,32 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun login(token: String, callback: AuthCallback) {
-        apiClient.create(AuthApiService::class.java)
-            .login(token)
-            .enqueue(object : Callback<User> {
-                override fun onResponse(call: Call<User>, response: Response<User>) {
-                    if (response.isSuccessful) {
-                        setUserState(response.body(), token)
-                        callback.onSuccess()
-                    }
-                    else {
-                        callback.onFailure(response.code())
-                    }
+    private fun authenticate(token: String, call: Call<User>, callback: AuthCallback) {
+        call.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    setUserState(response.body(), token)
+                    callback.onSuccess()
                 }
+                else {
+                    callback.onFailure(response.code())
+                }
+            }
 
-                override fun onFailure(call: Call<User>, t: Throwable) {
-                    println(t.message)
-                    callback.onFailure()
-                }
-            })
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                callback.onFailure()
+            }
+        })
+    }
+
+    fun login(token: String, callback: AuthCallback) {
+        val service = apiClient.create(AuthApiService::class.java)
+        authenticate(token, service.login(token), callback)
     }
 
     fun signup(token: String, uid: String, callback: AuthCallback) {
-//        apiClient.create(AuthApiService::class.java)
-//            .signup(token, uid)
-//            .enqueue(object : Callback<User> {
-//                override fun onResponse(call: Call<User>, response: Response<User>) {
-//                    if (response.isSuccessful) {
-//                        setUserState(response.body()!!, token)
-//                        callback.onSuccess()
-//                    }
-//                    else
-//                        callback.onFailure()
-//                }
-//
-//                override fun onFailure(call: Call<User>, t: Throwable) {
-//                    callback.onFailure()
-//                }
-//            })
+        val service = apiClient.create(AuthApiService::class.java)
+        authenticate(token, service.signup(token, uid), callback)
     }
 
     fun signOut() {

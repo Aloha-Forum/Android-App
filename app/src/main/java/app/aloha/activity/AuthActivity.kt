@@ -9,50 +9,51 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.aloha.R
+import app.aloha.domain.ResponseResult
+import app.aloha.domain.validateUsername
 import app.aloha.ui.component.AppBarNavIcon
+import app.aloha.ui.component.AppLogo
+import app.aloha.ui.component.BodyText
 import app.aloha.ui.component.GoogleOAuthButton
 import app.aloha.ui.component.Label
 import app.aloha.ui.component.Title
@@ -87,15 +88,18 @@ class AuthActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginPage() {
     val authVM: AuthViewModel = viewModel()
     val activity = LocalContext.current as Activity
-
-    val context = LocalContext.current as Activity
     var accessToken by remember { mutableStateOf<String?>(null) }
-    var username by remember { mutableStateOf("") }
+
+    var errMsg by remember { mutableStateOf<ResponseResult?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isLoading) {
+        errMsg = null
+    }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -103,11 +107,12 @@ fun LoginPage() {
         if (it.resultCode == RESULT_OK && it.data != null) {
             val response = AuthorizationResponse.fromIntent(it.data!!)
             if (response != null) {
+                isLoading = true
                 authVM.getAccessToken(response, object : TokenCallback {
                         override fun onSuccess(token: String) {
                             authVM.login(token, object : AuthCallback {
                                 override fun onSuccess() {
-                                    println("sucess")
+                                    isLoading = false
                                     activity.run {
                                         setResult(RESULT_OK)
                                         finish()
@@ -115,16 +120,18 @@ fun LoginPage() {
                                 }
 
                                 override fun onFailure(code: Int?) {
-                                    println("failed")
-
+                                    isLoading = false
                                     when (code) {
                                         404 -> {
                                             // user doesn't have an account
                                             // start the process of sign up
                                             accessToken = token
                                         }
+                                        null -> {
+                                            errMsg = ResponseResult.Error("Error: Timeout")
+                                        }
                                         else -> {
-
+                                            errMsg = ResponseResult.Error("Error: status code $code")
                                         }
                                     }
                                 }
@@ -132,7 +139,8 @@ fun LoginPage() {
                         }
 
                         override fun onFailure(message: String?) {
-
+                            isLoading = false
+                            errMsg = ResponseResult.Error(message ?: "Server didn't response")
                         }
                     }
                 )
@@ -155,72 +163,40 @@ fun LoginPage() {
                 Arrangement.spacedBy(36.dp),
                 Alignment.CenterHorizontally
             ) {
-                Title("Welcome to Aloha Forum")
+                if (isLoading) {
+                    BodyText("The process may take few seconds...")
 
-                AppLogo()
+                    CircularProgressIndicator(
+                        modifier = Modifier.width(64.dp),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+                else {
+                    Title("Welcome to Aloha Forum")
+                    AppLogo()
 
-
-                if (accessToken != null) {
-                    var validationResult by remember { mutableStateOf<ValidationResult?>(null) }
-
-                    UsernameInputField(username) { username = it }
-                    Label("3-20 characters, letters and digits only.")
-
-                    FlowRow(
-                        Modifier
-                            .heightIn(min = 48.dp)
-                            .fillMaxWidth()
-                            .clickable { accessToken = null },
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f), Alignment.CenterStart) {
-                            Label(
-                                "Switch account",
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                val result = validateUsername(username)
-                                if (result is ValidationResult.Success) {
-                                    authVM.signup(accessToken!!, username, object : AuthCallback {
-                                        override fun onSuccess() {
-                                            context.finish()
-                                        }
-
-                                        override fun onFailure(code: Int?) {
-                                            println(code)
-                                        }
-
-                                    })
-                                } else {
-                                    validationResult = result
-                                }
-                            },
-                            Modifier.padding(top = 16.dp)
-                        ) {
-                            Text("Sign up")
-                        }
+                    when (accessToken != null) {
+                        true -> SignUpSection(
+                            accessToken,
+                            setToken = { accessToken = it },
+                            setError = { errMsg = it },
+                            setIsLoading = { isLoading = it }
+                        )
+                        else -> GoogleOAuthButton(launcher)
                     }
 
-                    validationResult?.let {
-                        if (it is ValidationResult.Error)
+                    errMsg?.let {
+                        if (it is ResponseResult.Error)
                             Label(it.message, Modifier.padding(top = 8.dp), Color.Red)
                     }
                 }
-                else {
-                    GoogleOAuthButton(launcher)
-                }
-
             }
         }
-        Label("By using our app, you accept our privacy policy.")
+        PrivacyPolicyStatement(Modifier.fillMaxWidth())
     }
 }
+
 @Composable
 fun UsernameInputField(
     username: String,
@@ -236,26 +212,12 @@ fun UsernameInputField(
     )
 }
 
-fun validateUsername(username: String): ValidationResult {
-    return when {
-        username.isBlank() -> ValidationResult.Error("Username cannot be empty.")
-        username.length < 3 -> ValidationResult.Error("Username must be at least 3 characters long.")
-        username.length > 20 -> ValidationResult.Error("Username must be no more than 20 characters long.")
-        !username.all { it.isLetterOrDigit() } -> ValidationResult.Error("Username can only contain letters and digits.")
-        else -> ValidationResult.Success
-    }
-}
-
-sealed class ValidationResult {
-    data object Success : ValidationResult()
-    data class Error(val message: String) : ValidationResult()
-}
-
 @Composable
 private fun AuthActivityAppBar() {
     val activity = LocalContext.current as? Activity
 
-    TopAppBar("Entry",
+    TopAppBar(
+        "Entry",
         navIcon = AppBarNavIcon(R.drawable.ic_arrow_back, "Close the current page") {
             activity?.run {
                 setResult(RESULT_CANCELED)
@@ -265,11 +227,98 @@ private fun AuthActivityAppBar() {
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun AppLogo(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier,
-        painter = painterResource(R.drawable.img_logo_transparent),
-        contentDescription = "Our app logo"
-    )
+private fun PrivacyPolicyStatement(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
+    FlowRow(
+        modifier
+            .padding(vertical = 4.dp)
+            .clip(RoundedCornerShape(15.dp))
+            .clickable {
+                val intent = Intent(context, WebViewActivity::class.java)
+                    .putExtra("url", context.resources.getString(R.string.privacy_policy_url))
+
+                context.startActivity(intent)
+            }
+    ) {
+        Label("By using our app, you accept our ")
+        Label("privacy policy", color = Color.Blue, textDecoration = TextDecoration.Underline)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SignUpSection(
+    token: String?,
+    modifier: Modifier = Modifier,
+    setToken: (String?) -> Unit,
+    setError: (ResponseResult) -> Unit,
+    setIsLoading: (Boolean) -> Unit,
+) {
+    var uid by remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        UsernameInputField(uid) { uid = it }
+        Label("3-20 characters, letters and digits only.")
+    }
+
+    FlowRow(
+        modifier
+            .height(IntrinsicSize.Max)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            Modifier
+                .fillMaxHeight()
+                .weight(1f)
+                .clickable { setToken(null) },
+            Alignment.CenterStart
+        ) {
+            Label(
+                "Switch account",
+                color = Color.Blue,
+                textDecoration = TextDecoration.Underline
+            )
+        }
+
+        val authVM: AuthViewModel = hiltViewModel()
+        val activity = LocalContext.current as? Activity
+        Button(
+            onClick = {
+                val result = validateUsername(uid)
+                setError(result)
+
+                if (result is ResponseResult.Success) {
+                    setIsLoading(true)
+
+                    authVM.signup(token!!, uid, object : AuthCallback {
+                        override fun onSuccess() {
+                            activity?.finish()
+                        }
+
+                        override fun onFailure(code: Int?) {
+                            when (code == null) {
+                                true -> ResponseResult.Error("Timeout")
+                                false -> ResponseResult.Error(code.toString())
+                            }
+                        }
+                    })
+                }
+            },
+            colors = ButtonColors(
+                MaterialTheme.colorScheme.inverseSurface,
+                MaterialTheme.colorScheme.inverseOnSurface,
+                MaterialTheme.colorScheme.inverseSurface,
+                MaterialTheme.colorScheme.inverseOnSurface,
+            )
+        ) {
+            BodyText("Sign up", color = MaterialTheme.colorScheme.inverseOnSurface)
+        }
+    }
 }
