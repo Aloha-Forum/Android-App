@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
@@ -30,13 +31,15 @@ fun Label(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    fontWeight: FontWeight = FontWeight.Normal
+    fontWeight: FontWeight = FontWeight.Normal,
+    textDecoration: TextDecoration = TextDecoration.None
 ) {
     Text(
         text, modifier, color,
         style = MaterialTheme.typography.labelMedium,
         overflow = overflow,
-        fontWeight = fontWeight
+        fontWeight = fontWeight,
+        textDecoration = textDecoration
     )
 }
 

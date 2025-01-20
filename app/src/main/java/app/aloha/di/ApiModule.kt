@@ -1,5 +1,6 @@
 package app.aloha.di
 
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,9 +22,13 @@ class ApiModule {
     @Provides
     @Singleton
     fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
+        val gson = GsonBuilder()
+            .setLenient()  // Enable lenient parsing
+            .create()
+
         return Retrofit.Builder()
-            .baseUrl("https://alohaforum.azurewebsites.net")
-            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://192.168.1.100:7071")
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(httpClient)
             .build()
     }
