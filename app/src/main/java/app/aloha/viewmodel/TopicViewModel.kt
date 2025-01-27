@@ -1,6 +1,9 @@
 package app.aloha.viewmodel
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,18 +23,35 @@ class TopicViewModel @Inject constructor(
     private val apiClient: Retrofit
 ): ViewModel() {
     private val _topics = mutableStateMapOf<String, Topic>()
-    val topics: SnapshotStateMap<String, Topic>
-        get() = _topics
+    val topics: SnapshotStateMap<String, Topic> get() = _topics
 
     private val _posts = mutableStateMapOf<String, List<Post>>()
-    val posts: SnapshotStateMap<String, List<Post>>
-        get() = _posts
+    val posts: SnapshotStateMap<String, List<Post>> get() = _posts
+
+    var searchQuery by mutableStateOf("")
 
     private fun getTopics() {
         apiClient.create(TopicApiService::class.java)
             .getTopics()
             .enqueue(object : Callback<List<Topic>> {
                 override fun onResponse(call: Call<List<Topic>>, response: Response<List<Topic>>) {
+                    _topics.clear()
+                    if (response.body() != null)
+                        for (topic in response.body()!!) {
+                            _topics[topic.id] = topic
+                        }
+                }
+
+                override fun onFailure(call: Call<List<Topic>>, t: Throwable) { println(t) }
+            })
+    }
+
+    fun search() {
+        apiClient.create(TopicApiService::class.java)
+            .search(searchQuery)
+            .enqueue(object : Callback<List<Topic>> {
+                override fun onResponse(call: Call<List<Topic>>, response: Response<List<Topic>>) {
+                    _topics.clear()
                     if (response.body() != null)
                         for (topic in response.body()!!) {
                             _topics[topic.id] = topic

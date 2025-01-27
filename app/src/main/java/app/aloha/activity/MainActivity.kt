@@ -25,14 +25,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AlohaForumTheme {
-                val navController = rememberNavController()
+            val navController = rememberNavController()
 
+            AlohaForumTheme {
                 Scaffold(bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
-                    NavHost(navController, Page.Home.route) {
-                        composable(Page.Home.route) { HomePage(Modifier.padding(innerPadding)) }
-                        composable(Page.Explore.route) { ExplorePage(Modifier.padding(innerPadding)) }
-                        composable(Page.Profile.route) { ProfilePage(Modifier.padding(innerPadding)) }
+                    NavHost(navController, Page.Home.route, Modifier.padding(innerPadding)) {
+                        composable(Page.Home.route) { HomePage() }
+                        composable(Page.Explore.route) { ExplorePage() }
+                        composable(Page.Profile.route) { ProfilePage() }
                     }
                 }
             }
@@ -40,19 +40,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-sealed class Page(
-    val route: String,
-    val title: String,
-    @DrawableRes val activeIcon: Int,
-    @DrawableRes val inActiveIcon: Int
-) {
-    data object Home : Page("Home", "Home", R.drawable.ic_home_fill, R.drawable.ic_home)
-    data object Explore : Page("Explore", "Explore",
-        R.drawable.ic_explore_fill,
-        R.drawable.ic_explore
-    )
-    data object Profile : Page("Profile", "Profile",
-        R.drawable.ic_person_fill,
-        R.drawable.ic_person
-    )
+sealed class Page(val route: String, @DrawableRes val active: Int, @DrawableRes val inactive: Int) {
+    data object Home : Page("Home", R.drawable.ic_home_fill, R.drawable.ic_home)
+    data object Explore : Page("Explore", R.drawable.ic_explore_fill, R.drawable.ic_explore)
+    data object Profile : Page("Profile", R.drawable.ic_person_fill, R.drawable.ic_person)
 }

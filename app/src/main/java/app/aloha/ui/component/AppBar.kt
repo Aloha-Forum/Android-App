@@ -39,7 +39,7 @@ fun TopAppBar(
             Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .background(MaterialTheme.colorScheme.surface)
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
                 .padding(
                     top = 24.dp, bottom = if (description != null) 24.dp else 12.dp,

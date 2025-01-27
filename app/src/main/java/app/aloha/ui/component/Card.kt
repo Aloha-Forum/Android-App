@@ -16,12 +16,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.aloha.R
+import app.aloha.domain.timeLagFromCurrent
+import app.aloha.internet.model.Post
 
 data class CardInfo (
     @DrawableRes val drawable: Int,
     val value: String,
     val contentDescription: String
 )
+
+@Composable
+fun PostCard(p: Post, onClick: () -> Unit = {}) {
+    val info = mutableListOf<CardInfo>()
+    info.add(CardInfo(R.drawable.ic_person, p.uid, "Publisher"))
+    info.add(CardInfo(R.drawable.ic_comment, p.popularity.commentCount.toString(), "Comment Count"))
+    info.add(CardInfo(R.drawable.ic_activity, timeLagFromCurrent(p.lastActivity), "Recent activity"))
+
+    Card(p.title, p.body, info.toTypedArray(), onClick)
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -31,7 +44,7 @@ fun Card(
     props: Array<CardInfo> = arrayOf(),
     onClick: () -> Unit = {}
 ) {
-    Surface(shape = RoundedCornerShape(15.dp), shadowElevation = 4.dp) {
+    Surface(shape = RoundedCornerShape(15.dp), shadowElevation = 2.dp) {
         Column(
             Modifier
                 .clickable(onClick = onClick)
@@ -45,8 +58,7 @@ fun Card(
             Title(
                 title,
                 Modifier
-                    .padding(start = 24.dp, end = 24.dp, top = 24.dp,
-                    )
+                    .padding(start = 24.dp, end = 24.dp, top = 24.dp)
                     .heightIn(max = 80.dp),
             )
 

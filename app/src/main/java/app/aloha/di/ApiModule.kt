@@ -22,13 +22,9 @@ class ApiModule {
     @Provides
     @Singleton
     fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
-        val gson = GsonBuilder()
-            .setLenient()  // Enable lenient parsing
-            .create()
-
         return Retrofit.Builder()
             .baseUrl("http://192.168.1.100:7071")
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
             .build()
     }
