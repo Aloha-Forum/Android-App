@@ -8,4 +8,7 @@ import retrofit2.http.Query
 interface PostApiService {
     @GET("/api/post")
     fun getPost(@Query("id") id: String): Call<Post>
+
+    @GET("/api/recommend")
+    fun getRecommend(@Query("page") page: Int): Call<List<Post>>
 }

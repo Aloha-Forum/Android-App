@@ -29,6 +29,6 @@ fun IconText(
             contentDescription,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        BodyText(text)
+        Label(text)
     }
 }

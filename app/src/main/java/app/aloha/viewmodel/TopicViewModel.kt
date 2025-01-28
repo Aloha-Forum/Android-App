@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import app.aloha.internet.model.Post
 import app.aloha.internet.service.TopicApiService
 import app.aloha.internet.model.Topic
+import app.aloha.internet.service.PostApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopicViewModel @Inject constructor(
-    private val apiClient: Retrofit
+    private val service: TopicApiService
 ): ViewModel() {
     private val _topics = mutableStateMapOf<String, Topic>()
     val topics: SnapshotStateMap<String, Topic> get() = _topics
@@ -31,7 +32,7 @@ class TopicViewModel @Inject constructor(
     var searchQuery by mutableStateOf("")
 
     private fun getTopics() {
-        apiClient.create(TopicApiService::class.java)
+        service
             .getTopics()
             .enqueue(object : Callback<List<Topic>> {
                 override fun onResponse(call: Call<List<Topic>>, response: Response<List<Topic>>) {
@@ -47,7 +48,7 @@ class TopicViewModel @Inject constructor(
     }
 
     fun search() {
-        apiClient.create(TopicApiService::class.java)
+        service
             .search(searchQuery)
             .enqueue(object : Callback<List<Topic>> {
                 override fun onResponse(call: Call<List<Topic>>, response: Response<List<Topic>>) {
@@ -63,7 +64,7 @@ class TopicViewModel @Inject constructor(
     }
 
     fun getTopicPosts(id: String) {
-        apiClient.create(TopicApiService::class.java)
+        service
             .getTopicPosts(id)
             .enqueue(object : Callback<List<Post>> {
                 override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {

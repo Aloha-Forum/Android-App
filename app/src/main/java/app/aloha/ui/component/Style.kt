@@ -36,7 +36,7 @@ fun Label(
 ) {
     Text(
         text, modifier, color,
-        style = MaterialTheme.typography.labelMedium,
+        style = MaterialTheme.typography.labelSmall,
         overflow = overflow,
         fontWeight = fontWeight,
         textDecoration = textDecoration

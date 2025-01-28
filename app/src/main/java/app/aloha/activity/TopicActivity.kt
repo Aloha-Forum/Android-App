@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,10 +35,11 @@ class TopicActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val topicId = intent.getStringExtra("id")
-
+        println("inside" +topicId)
         enableEdgeToEdge()
         setContent {
             AlohaForumTheme {
+                println("theme" + topicId)
                 TopicScreen(topicId)
             }
         }
@@ -73,21 +75,25 @@ private fun PostList(posts: List<Post>, topicName: String, modifier: Modifier = 
 }
 
 @Composable
-private fun TopicScreen(topicId: String?, modifier: Modifier = Modifier) {
-    val topicVM: TopicViewModel = hiltViewModel()
+fun TopicScreen(topicId: String?, modifier: Modifier = Modifier, ) {
+    val topicVM = hiltViewModel<TopicViewModel>()
+
     val topic = topicVM.topics[topicId]
+    val posts = topicVM.posts[topicId] ?: emptyList()
+
+    LaunchedEffect(Unit) {
+        if (topicId != null)
+            topicVM.getTopicPosts(topicId)
+    }
 
     Scaffold(
         modifier,
         topBar = { TopAppBar(topic?.name, topic?.description) }
     ) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
-            val posts = remember { topicVM.posts[topicId] }
-            topicVM.getTopicPosts(topicId!!)
-
-            when (posts.isNullOrEmpty()) {
+            when (posts.isEmpty()) {
                 true -> EmptyPostList()
-                else -> PostList(posts, topic!!.name, Modifier.fillMaxHeight())
+                else -> PostList(posts, topic?.name ?: "", Modifier.fillMaxHeight())
             }
         }
     }

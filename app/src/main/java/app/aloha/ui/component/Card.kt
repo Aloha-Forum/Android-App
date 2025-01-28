@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.aloha.R
 import app.aloha.domain.timeLagFromCurrent
@@ -44,13 +46,13 @@ fun Card(
     props: Array<CardInfo> = arrayOf(),
     onClick: () -> Unit = {}
 ) {
-    Surface(shape = RoundedCornerShape(15.dp), shadowElevation = 2.dp) {
+    Surface(shape = RoundedCornerShape(30.dp), shadowElevation = 4.dp) {
         Column(
             Modifier
                 .clickable(onClick = onClick)
                 .background(
                     MaterialTheme.colorScheme.surfaceContainerLow,
-                    RoundedCornerShape(15.dp)
+                    RoundedCornerShape(30.dp)
                 )
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -63,14 +65,14 @@ fun Card(
             )
 
             if (body.isNotEmpty()) {
-                BodyText(
-                    body,
+                Text(
+                    body.trim(),
                     Modifier
-                        .padding(
-                            start = 24.dp, end = 24.dp,
-                            bottom = if (props.isNotEmpty()) 0.dp else 24.dp
-                        )
+                        .padding(24.dp, 12.dp)
                         .heightIn(max = 60.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -80,7 +82,7 @@ fun Card(
                         .background(MaterialTheme.colorScheme.surfaceContainer)
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     props.forEach { IconText(it.drawable, it.value, it.contentDescription) }
                 }

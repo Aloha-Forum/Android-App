@@ -2,6 +2,7 @@ package app.aloha.ui.page
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -56,6 +58,7 @@ private fun TopicList(topics: List<Topic>, modifier: Modifier = Modifier) {
     ) {
         items(topics) { topic ->
             Card(topic.name, topic.description) {
+                println(topic.id)
                 displayTopicPosts(context, topic.id)
             }
         }
@@ -82,7 +85,12 @@ fun ExplorePage(modifier: Modifier = Modifier) {
             }
         }
 
-        Column(Modifier.padding(top = 24.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
             val topicVM = hiltViewModel<TopicViewModel>()
             val topics = remember { topicVM.topics }
 
