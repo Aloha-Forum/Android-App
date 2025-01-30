@@ -8,7 +8,7 @@ data class Topic(
     val name: String,
     val description: String,
     val popularity: TopicPopularity,
-    val lastActivity: Long,
+    val lastActivity: String,
 )
 
 data class TopicPopularity(

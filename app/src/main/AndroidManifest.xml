@@ -18,6 +18,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.EditActivity"
+            android:exported="false"
+            android:label="@string/title_activity_edit"
+            android:theme="@style/Theme.AlohaForum" />
+        <activity
             android:name=".activity.WebViewActivity"
             android:exported="false"
             android:label="@string/title_activity_web_view"
@@ -30,7 +35,7 @@
             android:name=".activity.AuthActivity"
             android:exported="false"
             android:label="@string/title_activity_auth"
-            android:theme="@style/Theme.AlohaForum"></activity>
+            android:theme="@style/Theme.AlohaForum" />
         <activity
             android:name=".activity.PostActivity"
             android:exported="false"

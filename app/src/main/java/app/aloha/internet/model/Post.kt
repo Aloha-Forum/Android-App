@@ -8,12 +8,12 @@ data class Post(
 
     val topicId: String,
     val uid: String,
-    val postAt: Long,
+    val postAt: String,
     val title: String,
     val body: String,
     val likeCount: Int,
     val dislikeCount: Int,
-    val lastActivity: Long,
+    val lastActivity: String,
     val popularity: PostPopularity
 )
 

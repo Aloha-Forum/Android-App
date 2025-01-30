@@ -1,7 +1,9 @@
 package app.aloha.viewmodel
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
@@ -16,6 +18,10 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 
 
+enum class Vote {
+    Like, Dislike, None
+}
+
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val service: PostApiService
@@ -26,12 +32,14 @@ class PostViewModel @Inject constructor(
     private val _recommend = mutableStateListOf<Post>()
     val recommend: SnapshotStateList<Post> get() = _recommend
 
+    var vote: MutableState<Vote> = mutableStateOf(Vote.None)
+
+
     fun getPost(id: String) {
         service
             .getPost(id)
             .enqueue(object : Callback<Post> {
                 override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                    println(response.body())
                     if (response.body() != null)
                         _posts[id] = response.body()!!
                 }

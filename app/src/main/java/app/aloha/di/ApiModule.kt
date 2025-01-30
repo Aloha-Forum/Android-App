@@ -1,6 +1,7 @@
 package app.aloha.di
 
-import com.google.gson.GsonBuilder
+import app.aloha.internet.service.PostApiService
+import app.aloha.internet.service.TopicApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,5 +28,15 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
             .build()
+    }
+
+    @Provides
+    fun provideTopicApi(retrofit: Retrofit): TopicApiService {
+        return retrofit.create(TopicApiService::class.java)
+    }
+
+    @Provides
+    fun providePostApi(retrofit: Retrofit): PostApiService {
+        return retrofit.create(PostApiService::class.java)
     }
 }
