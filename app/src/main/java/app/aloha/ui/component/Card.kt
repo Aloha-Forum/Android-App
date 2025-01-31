@@ -31,8 +31,9 @@ data class CardInfo (
 @Composable
 fun PostCard(p: Post, onClick: () -> Unit = {}) {
     val info = mutableListOf<CardInfo>()
+
     info.add(CardInfo(R.drawable.ic_person, p.uid, "Publisher"))
-    info.add(CardInfo(R.drawable.ic_comment, p.popularity.commentCount.toString(), "Comment Count"))
+    info.add(CardInfo(R.drawable.ic_comment, p.commentCount.toString(), "Comment Count"))
     info.add(CardInfo(R.drawable.ic_activity, timeLagFromCurrent(p.lastActivity), "Recent activity"))
 
     Card(p.title, p.body, info.toTypedArray(), onClick)
@@ -46,14 +47,11 @@ fun Card(
     props: Array<CardInfo> = arrayOf(),
     onClick: () -> Unit = {}
 ) {
-    Surface(shape = RoundedCornerShape(30.dp), shadowElevation = 4.dp) {
+    Surface(shadowElevation = 4.dp) {
         Column(
             Modifier
                 .clickable(onClick = onClick)
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainerLow,
-                    RoundedCornerShape(30.dp)
-                )
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -68,7 +66,8 @@ fun Card(
                 Text(
                     body.trim(),
                     Modifier
-                        .padding(24.dp, 12.dp)
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 12.dp, bottom = if (props.isNotEmpty()) 12.dp else 24.dp)
                         .heightIn(max = 60.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

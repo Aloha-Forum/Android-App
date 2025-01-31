@@ -14,11 +14,6 @@ data class Post(
     val likeCount: Int,
     val dislikeCount: Int,
     val lastActivity: String,
-    val popularity: PostPopularity
-)
-
-
-data class PostPopularity(
-    val viewCount: Int,
-    val commentCount: Int
+    val commentCount: Int,
+    val vote: Int
 )

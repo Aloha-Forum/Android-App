@@ -43,9 +43,6 @@ class EditViewModel @Inject constructor(
             .publish(token, PublishRequest(title, content, topicId))
             .enqueue(object : Callback<PublishResponse> {
                 override fun onResponse(call: Call<PublishResponse>, response: Response<PublishResponse>) {
-                    println("success")
-                    println(response.code())
-
                     val res = response.body()
                     if (response.isSuccessful && res != null)
                         success(res.postId)

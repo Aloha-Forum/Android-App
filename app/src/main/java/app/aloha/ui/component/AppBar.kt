@@ -21,20 +21,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun TopAppBar(
     title: String?,
     description: String? = null,
-    navIcon: AppBarNavIcon? = null
+    navIcon: AppBarNavIcon? = null,
+    modifier: Modifier = Modifier
 ) {
-    Surface(shadowElevation = 4.dp) {
+    Surface(modifier, shadowElevation = 4.dp) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -55,9 +59,13 @@ fun TopAppBar(
                 }
             }
 
-            Column {
-                Box(Modifier.heightIn(min = 48.dp, max = 60.dp), contentAlignment = Alignment.CenterStart) {
-                    Title(title ?: "")
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Box(Modifier.heightIn(48.dp, 60.dp), Alignment.CenterStart) {
+                    Text(
+                        title ?: "",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp
+                    )
                 }
 
                 description?.run {
