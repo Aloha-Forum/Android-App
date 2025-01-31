@@ -19,7 +19,7 @@ fun Title(
 ) {
     Text(
         text, modifier, color,
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleLarge,
         overflow = overflow,
         fontWeight = fontWeight
     )

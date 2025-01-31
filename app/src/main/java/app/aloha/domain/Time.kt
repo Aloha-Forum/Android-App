@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 fun timeLagFromCurrent(a: Long): String {
@@ -30,7 +31,6 @@ fun timeLagFromCurrent(a: Long): String {
 
 fun timeLagFromCurrent(isoDateString: String): String {
     return try {
-        // Parse the ISO date string to Date
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
         format.timeZone = java.util.TimeZone.getTimeZone("UTC")
         val date = format.parse(isoDateString) ?: return "Invalid date format"
@@ -60,4 +60,11 @@ fun timeLagFromCurrent(isoDateString: String): String {
     } catch (e: ParseException) {
         "Invalid date format"
     }
+}
+
+fun timestampToIsoString(timestamp: Long): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+    sdf.timeZone = TimeZone.getTimeZone("UTC")
+
+    return sdf.format(Date(timestamp))
 }

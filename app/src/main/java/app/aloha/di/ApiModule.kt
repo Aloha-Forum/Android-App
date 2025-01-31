@@ -1,5 +1,6 @@
 package app.aloha.di
 
+import app.aloha.internet.service.CommentApiService
 import app.aloha.internet.service.PostApiService
 import app.aloha.internet.service.TopicApiService
 import dagger.Module
@@ -38,5 +39,10 @@ class ApiModule {
     @Provides
     fun providePostApi(retrofit: Retrofit): PostApiService {
         return retrofit.create(PostApiService::class.java)
+    }
+
+    @Provides
+    fun provideCommentApi(retrofit: Retrofit): CommentApiService {
+        return retrofit.create(CommentApiService::class.java)
     }
 }

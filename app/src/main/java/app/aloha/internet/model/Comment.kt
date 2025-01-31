@@ -6,9 +6,9 @@ data class Comment(
     @SerializedName("commentId")
     val id: String,
     val postId: String,
-    val commentId: String,
     val createdAt: String,
     val content: String,
-    val likeCount: Int,
-    val dislikeCount: Int,
+    val uid: String,
+//    val likeCount: Int = 0,
+//    val dislikeCount: Int = 0,
 )

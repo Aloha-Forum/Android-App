@@ -34,7 +34,6 @@ class PostViewModel @Inject constructor(
 
     var vote: MutableState<Vote> = mutableStateOf(Vote.None)
 
-
     fun getPost(id: String) {
         service
             .getPost(id)
