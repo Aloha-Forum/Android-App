@@ -16,17 +16,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,25 +75,25 @@ private fun TopBar(modifier: Modifier = Modifier) {
     val activity = LocalContext.current as Activity
 
     TopAppBar(
-        "Edit",
-        navIcon = AppBarNavIcon(R.drawable.ic_arrow_back, "Close this page") { activity.finish() }
+        "Create Post",
+        navIcon = AppBarNavIcon(R.drawable.ic_arrow_back, "Close this page") { activity.finish() },
+        modifier = modifier
     )
 }
 
 @Composable
 private fun PublishButton(modifier: Modifier = Modifier) {
     val editVM = hiltViewModel<EditViewModel>()
+    val activity = LocalContext.current as Activity
 
     Box(
         modifier
             .fillMaxHeight()
             .clickable {
-                println(editVM.validateTitle())
-                println(editVM.validateContent())
                 if (editVM.validateTitle() && editVM.validateContent()) {
                     editVM.publish(
                         success = {
-                            println(it)
+                            activity.finish()
                         },
                         error = { println(it) }
                     )
@@ -131,28 +138,45 @@ private fun BottomBar(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TitleTextField(modifier: Modifier = Modifier) {
     val editVM = hiltViewModel<EditViewModel>()
 
-    TextField(
-        value = editVM.title,
-        onValueChange = { editVM.title = it },
-        modifier = modifier,
-        placeholder = { Text("Title") }
-    )
+    Column {
+        Text("Title")
+
+        TextField(
+            value = editVM.title,
+            onValueChange = { editVM.title = it },
+            modifier = modifier.clip(RoundedCornerShape(16.dp)),
+            placeholder = { Text("Title") },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent,
+            )
+        )
+    }
 }
 
 @Composable
 private fun ContentTextField(modifier: Modifier = Modifier) {
     val editVM = hiltViewModel<EditViewModel>()
 
-    TextField(
-        value = editVM.content,
-        onValueChange = { editVM.content = it },
-        modifier = modifier.heightIn(min=500.dp),
-        placeholder = { Text("Content (At least 20 words)") }
-    )
+    Column {
+        Text("Content")
+
+        TextField(
+            value = editVM.content,
+            onValueChange = { editVM.content = it },
+            modifier = modifier
+                .clip(RoundedCornerShape(16.dp))
+                .heightIn(min=350.dp),
+            placeholder = { Text("Enter the content...") }
+        )
+    }
 }
 
 @Composable
@@ -161,14 +185,15 @@ private fun EditScreen(modifier: Modifier = Modifier) {
         modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
             Modifier
                 .padding(vertical = 16.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(30.dp))
                 .fillMaxWidth()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(16.dp, 24.dp)
+                .imePadding(),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             TitleTextField(Modifier.fillMaxWidth())
             ContentTextField(Modifier.fillMaxWidth())

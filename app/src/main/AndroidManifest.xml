@@ -21,6 +21,7 @@
             android:name=".activity.EditActivity"
             android:exported="false"
             android:label="@string/title_activity_edit"
+            android:windowSoftInputMode="stateVisible|adjustNothing"
             android:theme="@style/Theme.AlohaForum" />
         <activity
             android:name=".activity.WebViewActivity"

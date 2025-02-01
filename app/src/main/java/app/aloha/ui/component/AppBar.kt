@@ -61,11 +61,7 @@ fun TopAppBar(
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Box(Modifier.heightIn(48.dp, 60.dp), Alignment.CenterStart) {
-                    Text(
-                        title ?: "",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp
-                    )
+                    Title(title ?: "", fontWeight = FontWeight.Bold)
                 }
 
                 description?.run {

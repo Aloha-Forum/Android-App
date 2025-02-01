@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,7 +52,7 @@ fun Card(
         Column(
             Modifier
                 .clickable(onClick = onClick)
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -78,7 +79,7 @@ fun Card(
             if (props.isNotEmpty()) {
                 FlowRow(
                     Modifier
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                        .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)

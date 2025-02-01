@@ -51,7 +51,6 @@ class EditViewModel @Inject constructor(
                 }
 
                 override fun onFailure(call: Call<PublishResponse>, t: Throwable) {
-                    println("failure")
                     error(t.toString())
                 }
             })
