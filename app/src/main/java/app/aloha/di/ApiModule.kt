@@ -26,7 +26,7 @@ class ApiModule {
     @Singleton
     fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.100:7071")
+            .baseUrl("https://alohaforum.azurewebsites.net")
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
             .build()
