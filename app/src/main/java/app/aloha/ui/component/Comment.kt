@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +30,7 @@ fun CommentCard(uid: String, content: String, postAt: String, nth: Int? = null) 
                     .height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Box(Modifier.fillMaxHeight(), Alignment.CenterStart) {
+                Box(Modifier.fillMaxHeight().width(32.dp), Alignment.Center) {
                     Avatar(uid, size = 24.dp)
                 }
                 Column {

@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import java.net.URL
 
 @Composable
-fun Avatar(uid: String, reloadAvatar: Boolean = false, size: Dp = 48.dp, onClick: () -> Unit = {}) {
+fun Avatar(uid: String?, reloadAvatar: Boolean = false, size: Dp = 48.dp, onClick: () -> Unit = {}) {
     val url = "https://alohapublic.blob.core.windows.net/avatars/$uid"
 
     val context = LocalContext.current
@@ -35,18 +35,20 @@ fun Avatar(uid: String, reloadAvatar: Boolean = false, size: Dp = 48.dp, onClick
         mutableStateOf(BitmapFactory.decodeResource(context.resources, R.drawable.anonymous))
     }
 
-    LaunchedEffect(reloadAvatar) {
-        coroutineScope.launch {
-            try {
-                val connection = URL(url).openConnection()
+    uid?.let {
+        LaunchedEffect(it) {
+            coroutineScope.launch {
+                try {
+                    val connection = URL(url).openConnection()
 
-                connection.connect()
+                    connection.connect()
 
-                val input = connection.getInputStream()
-                bitmap = BitmapFactory.decodeStream(input)
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
+                    val input = connection.getInputStream()
+                    bitmap = BitmapFactory.decodeStream(input)
+                }
+                catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

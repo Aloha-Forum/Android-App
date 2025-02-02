@@ -116,11 +116,12 @@ private fun ProfileTopBar() {
         ) {
             TopAppBar(
                 "Guest",
-                "Click here to log in...",
-                AppBarNavIcon(R.drawable.ic_person, "User Icon") {
-                    launcher.launch("image/*")
+                "Click here to log in..."
+            ) {
+                Box(Modifier.padding(end=12.dp)) {
+                    Avatar(null, reloadAvatar)
                 }
-            )
+            }
         }
     }
     else {
