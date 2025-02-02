@@ -1,6 +1,5 @@
 package app.aloha.ui.component
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -36,7 +35,7 @@ fun Avatar(uid: String?, reloadAvatar: Boolean = false, size: Dp = 48.dp, onClic
     }
 
     uid?.let {
-        LaunchedEffect(it) {
+        LaunchedEffect(reloadAvatar) {
             coroutineScope.launch {
                 try {
                     val connection = URL(url).openConnection()

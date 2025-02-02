@@ -101,7 +101,11 @@ private fun ProfileTopBar() {
             coroutineScope.launch {
                 val filePart = prepareFilePart(it, context)
                 if (filePart != null) {
-                    avatarVM.uploadAvatar(filePart, { reloadAvatar = !reloadAvatar }) {
+                    avatarVM.uploadAvatar(filePart, {
+                        // Toggle reloadAvatar to trigger recomposition
+                        reloadAvatar = !reloadAvatar
+                        println("Upload successful")
+                    }) {
                         println("Upload failed")
                     }
                 }
@@ -118,13 +122,12 @@ private fun ProfileTopBar() {
                 "Guest",
                 "Click here to log in..."
             ) {
-                Box(Modifier.padding(end=12.dp)) {
+                Box(Modifier.padding(end = 12.dp)) {
                     Avatar(null, reloadAvatar)
                 }
             }
         }
-    }
-    else {
+    } else {
         var showLogOutDialog by remember { mutableStateOf(false) }
         if (showLogOutDialog) {
             LogOutDialog(
@@ -133,9 +136,9 @@ private fun ProfileTopBar() {
             )
         }
         Box(Modifier.clickable { showLogOutDialog = true }) {
-            TopAppBar(user!!.id) {
-                Box(Modifier.padding(end=12.dp)) {
-                    Avatar(user!!.id, reloadAvatar) {
+            TopAppBar(title = user!!.id) {
+                Box(Modifier.padding(end = 12.dp)) {
+                    Avatar(user!!.id, reloadAvatar) { // Pass reloadAvatar
                         launcher.launch("image/*")
                     }
                 }

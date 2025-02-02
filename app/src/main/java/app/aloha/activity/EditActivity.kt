@@ -29,7 +29,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +44,8 @@ import app.aloha.ui.component.AppBarNavIcon
 import app.aloha.ui.component.TopAppBar
 import app.aloha.ui.theme.AlohaForumTheme
 import app.aloha.viewmodel.EditViewModel
+import app.aloha.viewmodel.TopicViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,6 +62,14 @@ class EditActivity : ComponentActivity() {
             }
 
             AlohaForumTheme {
+                val systemUiController = rememberSystemUiController()
+                val colorScheme = MaterialTheme.colorScheme
+
+                LaunchedEffect(colorScheme) {
+                    systemUiController.setStatusBarColor(colorScheme.surface)
+                    systemUiController.setNavigationBarColor(colorScheme.surfaceVariant)
+                }
+
                 Scaffold(
                     Modifier.fillMaxSize(),
                     topBar = { TopBar() },
@@ -85,6 +97,9 @@ private fun TopBar(modifier: Modifier = Modifier) {
 private fun PublishButton(modifier: Modifier = Modifier) {
     val editVM = hiltViewModel<EditViewModel>()
     val activity = LocalContext.current as Activity
+
+    val topicVM = hiltViewModel<TopicViewModel>()
+
 
     Box(
         modifier
@@ -150,17 +165,19 @@ private fun TitleTextField(modifier: Modifier = Modifier) {
             value = editVM.title,
             onValueChange = { editVM.title = it },
             modifier = modifier.clip(RoundedCornerShape(16.dp)),
-            placeholder = { Text("Title") },
+            placeholder = { Text("Enter the title...") },
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
             )
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContentTextField(modifier: Modifier = Modifier) {
     val editVM = hiltViewModel<EditViewModel>()
@@ -174,7 +191,14 @@ private fun ContentTextField(modifier: Modifier = Modifier) {
             modifier = modifier
                 .clip(RoundedCornerShape(16.dp))
                 .heightIn(min=350.dp),
-            placeholder = { Text("Enter the content...") }
+            placeholder = { Text("Enter the content...") },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+            )
         )
     }
 }

@@ -251,7 +251,6 @@ fun AlohaForumTheme(
         else -> if (darkTheme) highContrastDarkColorScheme else lightScheme
     }
 
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

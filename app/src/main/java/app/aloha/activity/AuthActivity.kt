@@ -62,6 +62,7 @@ import app.aloha.ui.theme.AlohaForumTheme
 import app.aloha.viewmodel.AuthCallback
 import app.aloha.viewmodel.AuthViewModel
 import app.aloha.viewmodel.TokenCallback
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import net.openid.appauth.AuthorizationResponse
 
@@ -74,6 +75,14 @@ class AuthActivity : ComponentActivity() {
                 enableEdgeToEdge()
 
                 Scaffold(topBar = { AuthActivityAppBar() }) { innerPadding ->
+                    val systemUiController = rememberSystemUiController()
+                    val colorScheme = MaterialTheme.colorScheme
+
+                    LaunchedEffect(colorScheme) {
+                        systemUiController.setStatusBarColor(colorScheme.surface)
+                        systemUiController.setNavigationBarColor(colorScheme.surface)
+                    }
+
                     Box(
                         Modifier
                             .padding(innerPadding)

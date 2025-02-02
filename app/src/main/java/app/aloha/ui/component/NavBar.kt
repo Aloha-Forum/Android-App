@@ -88,7 +88,7 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     Box(
         modifier
             .navigationBarsPadding()
-            .padding(24.dp, 12.dp)
+            .padding(24.dp, 16.dp)
             .fillMaxWidth()
             .height(60.dp)
             .onGloballyPositioned { coordinates ->

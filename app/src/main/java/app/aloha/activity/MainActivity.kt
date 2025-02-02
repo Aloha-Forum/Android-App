@@ -6,11 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,6 +26,7 @@ import app.aloha.ui.page.ExplorePage
 import app.aloha.ui.page.HomePage
 import app.aloha.ui.page.ProfilePage
 import app.aloha.ui.theme.AlohaForumTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,9 +37,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-
             AlohaForumTheme {
-                Scaffold() { _ ->
+                Scaffold { _ ->
+                    val systemUiController = rememberSystemUiController()
+                    val colorScheme = MaterialTheme.colorScheme
+
+                    LaunchedEffect(colorScheme) {
+                        systemUiController.setStatusBarColor(colorScheme.surface)
+                        systemUiController.setNavigationBarColor(colorScheme.surface)
+                    }
+
+
                     Box(Modifier.navigationBarsPadding()) {
                         NavHost(navController, Page.Home.route, Modifier.fillMaxSize()) {
                             composable(Page.Home.route) { HomePage() }

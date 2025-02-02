@@ -68,6 +68,7 @@ import app.aloha.ui.theme.AlohaForumTheme
 import app.aloha.viewmodel.CommentViewModel
 import app.aloha.viewmodel.PostViewModel
 import app.aloha.viewmodel.Vote
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -197,6 +198,14 @@ class PostActivity : ComponentActivity() {
 fun PostBottomBar(modifier: Modifier = Modifier) {
     val commentVM = hiltViewModel<CommentViewModel>()
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val systemUiController = rememberSystemUiController()
+    val colorScheme = MaterialTheme.colorScheme
+
+    LaunchedEffect(colorScheme) {
+        systemUiController.setStatusBarColor(colorScheme.surface)
+        systemUiController.setNavigationBarColor(colorScheme.surfaceContainer)
+    }
 
     Surface(modifier, shadowElevation = 8.dp) {
         Row(

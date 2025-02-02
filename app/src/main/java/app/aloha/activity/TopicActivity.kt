@@ -25,6 +25,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -39,6 +41,7 @@ import app.aloha.ui.component.PostCard
 import app.aloha.ui.component.TopAppBar
 import app.aloha.ui.theme.AlohaForumTheme
 import app.aloha.viewmodel.TopicViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,6 +52,14 @@ class TopicActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AlohaForumTheme {
+                val systemUiController = rememberSystemUiController()
+                val colorScheme = MaterialTheme.colorScheme
+
+                LaunchedEffect(colorScheme) {
+                    systemUiController.setStatusBarColor(colorScheme.surface)
+                    systemUiController.setNavigationBarColor(colorScheme.surface)
+                }
+
                 TopicScreen(topicId)
             }
         }
@@ -128,7 +139,6 @@ private fun PostList(posts: List<Post>, topicName: String, modifier: Modifier = 
     }
 }
 
-
 @Composable
 fun TopicScreen(topicId: String?, modifier: Modifier = Modifier, ) {
     val context = LocalContext.current
@@ -145,9 +155,11 @@ fun TopicScreen(topicId: String?, modifier: Modifier = Modifier, ) {
     Scaffold(
         modifier,
         topBar = { TopAppBar(topic?.name, topic?.description) },
-        floatingActionButton = { FloatingActionButton(onClick = { startEditPage(context, topicId!!) }) {
-            Icon(painter = painterResource(R.drawable.ic_stylus), contentDescription = "")
-        }}
+        floatingActionButton = {
+            FloatingActionButton(onClick = { startEditPage(context, topicId!!) }) {
+                Icon(painter = painterResource(R.drawable.ic_stylus), contentDescription = "")
+            }
+        }
     ) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
             when (posts.isEmpty()) {

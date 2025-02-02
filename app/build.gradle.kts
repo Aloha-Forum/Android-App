@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.converter.gson.v290)
     implementation(libs.appauth)
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
