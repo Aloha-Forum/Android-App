@@ -8,12 +8,12 @@ data class Post(
 
     val topicId: String,
     val uid: String,
-    val postAt: String,
     val title: String,
     val body: String,
-    val likeCount: Int,
-    val dislikeCount: Int,
-    val lastActivity: String,
-    val commentCount: Int,
-    val vote: Int
+    val postAt: String,
+    val likeCount: Int = 0,
+    val dislikeCount: Int = 0,
+    val lastActivity: String = postAt,
+    val commentCount: Int = 0,
+    val vote: Int = 0
 )

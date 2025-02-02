@@ -44,7 +44,6 @@ import app.aloha.ui.component.AppBarNavIcon
 import app.aloha.ui.component.TopAppBar
 import app.aloha.ui.theme.AlohaForumTheme
 import app.aloha.viewmodel.EditViewModel
-import app.aloha.viewmodel.TopicViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -98,9 +97,6 @@ private fun PublishButton(modifier: Modifier = Modifier) {
     val editVM = hiltViewModel<EditViewModel>()
     val activity = LocalContext.current as Activity
 
-    val topicVM = hiltViewModel<TopicViewModel>()
-
-
     Box(
         modifier
             .fillMaxHeight()
@@ -108,6 +104,7 @@ private fun PublishButton(modifier: Modifier = Modifier) {
                 if (editVM.validateTitle() && editVM.validateContent()) {
                     editVM.publish(
                         success = {
+                            activity.setResult(Activity.RESULT_OK)
                             activity.finish()
                         },
                         error = { println(it) }

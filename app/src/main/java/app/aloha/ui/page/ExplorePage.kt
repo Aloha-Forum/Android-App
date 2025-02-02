@@ -34,6 +34,7 @@ import app.aloha.ui.component.Card
 import app.aloha.ui.component.PostCard
 import app.aloha.ui.component.SearchBar
 import app.aloha.ui.component.Title
+import app.aloha.viewmodel.SearchViewModel
 import app.aloha.viewmodel.TopicViewModel
 
 @Composable
@@ -132,8 +133,8 @@ fun ExplorePage(modifier: Modifier = Modifier) {
                 .padding(vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            val topicVM = hiltViewModel<TopicViewModel>()
-            val topics = remember { topicVM.topics }
+            val searchVM = hiltViewModel<SearchViewModel>()
+            val topics = remember { searchVM.searchResults }
 
             when (topics.isNotEmpty()) {
                 true -> TopicList(topics.values.toList())

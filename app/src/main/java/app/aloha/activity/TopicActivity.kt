@@ -1,11 +1,15 @@
 package app.aloha.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -38,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.aloha.R
 import app.aloha.internet.model.Post
 import app.aloha.ui.component.PostCard
+import app.aloha.ui.component.Title
 import app.aloha.ui.component.TopAppBar
 import app.aloha.ui.theme.AlohaForumTheme
 import app.aloha.viewmodel.TopicViewModel
@@ -66,11 +72,53 @@ class TopicActivity : ComponentActivity() {
     }
 }
 
-private fun startEditPage(context: Context, topicId: String) {
+@Composable
+fun TopicScreen(topicId: String?, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val topicVM: TopicViewModel = hiltViewModel()
+
+    val topic by remember { topicVM.topic }
+    val posts by remember { topicVM.posts }
+
+    LaunchedEffect(topicId) {
+        if (topicId != null) {
+            topicVM.getTopicPosts(topicId)
+        }
+    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            topicId?.let {
+                topicVM.getTopicPosts(it)
+            }
+        }
+    }
+
+    Scaffold(
+        modifier,
+        topBar = { TopAppBar(topic?.name ?: "Topic", topic?.description ?: "") },
+        floatingActionButton = {
+            topicId?.let {
+                FloatingActionButton(onClick = { startEditPage(context, topicId, launcher) }) {
+                    Icon(painter = painterResource(R.drawable.ic_stylus), contentDescription = "")
+                }
+            }
+        }
+    ) { innerPadding ->
+        Column(Modifier.padding(innerPadding)) {
+            when (posts.isEmpty()) {
+                true -> EmptyPostList()
+                else -> PostList(posts, topic?.name ?: "", Modifier.fillMaxHeight())
+            }
+        }
+    }
+}
+
+private fun startEditPage(context: Context, topicId: String, launcher: ActivityResultLauncher<Intent>) {
     val intent = Intent(context, EditActivity::class.java).apply {
         putExtra("topicId", topicId)
     }
-    context.startActivity(intent)
+    launcher.launch(intent)
 }
 
 private fun displayPost(context: Context, topicName: String, postId: String) {
@@ -84,7 +132,10 @@ private fun displayPost(context: Context, topicName: String, postId: String) {
 @Composable
 private fun EmptyPostList(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize(), Alignment.Center) {
-        Text("No posts found")
+        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+            Title("Σ(っ°Д°;)っ")
+            Text("No Post found")
+        }
     }
 }
 
@@ -136,36 +187,5 @@ private fun PostList(posts: List<Post>, topicName: String, modifier: Modifier = 
                 )
                 .align(Alignment.BottomCenter)
         )
-    }
-}
-
-@Composable
-fun TopicScreen(topicId: String?, modifier: Modifier = Modifier, ) {
-    val context = LocalContext.current
-    val topicVM = hiltViewModel<TopicViewModel>()
-
-    val topic = topicVM.topics[topicId]
-    val posts = topicVM.posts[topicId] ?: emptyList()
-
-    LaunchedEffect(Unit) {
-        if (topicId != null)
-            topicVM.getTopicPosts(topicId)
-    }
-
-    Scaffold(
-        modifier,
-        topBar = { TopAppBar(topic?.name, topic?.description) },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { startEditPage(context, topicId!!) }) {
-                Icon(painter = painterResource(R.drawable.ic_stylus), contentDescription = "")
-            }
-        }
-    ) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
-            when (posts.isEmpty()) {
-                true -> EmptyPostList()
-                else -> PostList(posts, topic?.name ?: "", Modifier.fillMaxHeight())
-            }
-        }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.aloha.internet.model.Post
 import app.aloha.internet.service.PostApiService
 import app.aloha.internet.service.PublishRequest
 import app.aloha.internet.service.PublishResponse
@@ -38,14 +39,19 @@ class EditViewModel @Inject constructor(
         return !(content.isBlank() || content.length < 20 || content.length > 5000)
     }
 
-    private fun requestPublish(token: String, success: (String) -> Unit, error: (String) -> Unit) {
+    private fun requestPublish(token: String, success: (Post) -> Unit, error: (String) -> Unit) {
         service
             .publish(token, PublishRequest(title, content, topicId))
             .enqueue(object : Callback<PublishResponse> {
                 override fun onResponse(call: Call<PublishResponse>, response: Response<PublishResponse>) {
                     val res = response.body()
-                    if (response.isSuccessful && res != null)
-                        success(res.postId)
+                    if (response.isSuccessful && res != null) {
+                        viewModelScope.launch {
+                            dataStoreRepo.get(PrefKeys.USERNAME).collect { uid ->
+                                success(Post(res.postId, topicId, uid ?: "You", title, content, res.postAt))
+                            }
+                        }
+                    }
                     else
                         error(response.errorBody().toString())
                 }
@@ -59,7 +65,7 @@ class EditViewModel @Inject constructor(
     /**
      * @param success a post id will be passed as the parameter
      */
-    fun publish(success: (String) -> Unit, error: (String) -> Unit) {
+    fun publish(success: (Post) -> Unit, error: (String) -> Unit) {
         viewModelScope.launch {
             dataStoreRepo.get(PrefKeys.ACCESS_TOKEN).collect { token ->
                 if (token != null)

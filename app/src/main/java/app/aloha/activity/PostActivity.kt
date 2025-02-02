@@ -84,7 +84,6 @@ class PostActivity : ComponentActivity() {
             postVM.getPost(id!!)
 
             val commentVM: CommentViewModel = hiltViewModel()
-
             val comment = remember { commentVM.comment }
 
             LaunchedEffect(Unit) {
@@ -162,7 +161,8 @@ class PostActivity : ComponentActivity() {
                                         MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
                                         RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                                     )
-                                    .padding(24.dp),
+                                    .padding(24.dp)
+                                    .heightIn(min=200.dp),
                                 verticalArrangement = Arrangement.spacedBy(24.dp)
                             ) {
 
@@ -173,16 +173,31 @@ class PostActivity : ComponentActivity() {
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
-                                comment.forEachIndexed { index, it ->
-                                    CommentCard(it.uid, it.content, it.createdAt, index+1)
+                                if (comment.isNotEmpty()) {
+                                    comment.forEachIndexed { index, it ->
+                                        CommentCard(it.uid, it.content, it.createdAt, index+1)
 
-                                    if (index != comment.size - 1) {
-                                        Box(
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .height(1.dp)
-                                                .background(MaterialTheme.colorScheme.outlineVariant)
-                                        )
+                                        if (index != comment.size - 1) {
+                                            Box(
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .height(1.dp)
+                                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                                            )
+                                        }
+                                    }
+                                }
+                                else {
+                                    Box(
+                                        Modifier
+                                            .fillMaxSize()
+                                            .padding(top=24.dp),
+                                        Alignment.Center
+                                    ) {
+                                        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                                            Title("Σ(っ°Д°;)っ")
+                                            Text("No Comment found")
+                                        }
                                     }
                                 }
                             }

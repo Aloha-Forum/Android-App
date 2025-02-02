@@ -35,7 +35,7 @@ fun Avatar(uid: String?, reloadAvatar: Boolean = false, size: Dp = 48.dp, onClic
     }
 
     uid?.let {
-        LaunchedEffect(reloadAvatar) {
+        LaunchedEffect(uid, reloadAvatar) {
             coroutineScope.launch {
                 try {
                     val connection = URL(url).openConnection()
