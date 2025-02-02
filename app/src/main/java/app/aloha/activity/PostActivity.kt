@@ -194,15 +194,6 @@ class PostActivity : ComponentActivity() {
 }
 
 @Composable
-fun UserIcon(modifier: Modifier = Modifier) {
-    Box(
-        modifier
-            .size(24.dp)
-            .background(Color.Black, CircleShape)
-    )
-}
-
-@Composable
 fun PostBottomBar(modifier: Modifier = Modifier) {
     val commentVM = hiltViewModel<CommentViewModel>()
     val keyboardController = LocalSoftwareKeyboardController.current

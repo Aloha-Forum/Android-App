@@ -121,12 +121,7 @@ fun ExplorePage(modifier: Modifier = Modifier) {
             Alignment.BottomStart
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text(
-                    "Explore",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp
-                )
+                Title("Explore", fontWeight = FontWeight.Bold,)
                 SearchBar()
             }
         }

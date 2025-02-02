@@ -103,7 +103,7 @@ private fun RecommendList(posts: List<Post>, modifier: Modifier = Modifier) {
 
 @Composable
 private fun HomePageTopBar(modifier: Modifier = Modifier) {
-    TopAppBar("Home", "Today is your first day using our app!", modifier=modifier)
+    TopAppBar("Home", modifier=modifier)
 }
 
 @Composable

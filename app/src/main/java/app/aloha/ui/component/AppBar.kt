@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.sp
 fun TopAppBar(
     title: String?,
     description: String? = null,
-    navIcon: AppBarNavIcon? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    icons: @Composable () -> Unit
 ) {
     Surface(modifier, shadowElevation = 4.dp) {
         Row(
@@ -51,12 +51,8 @@ fun TopAppBar(
                 ),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            navIcon?.run {
-                Box(Modifier.fillMaxHeight(), Alignment.CenterStart) {
-                    IconButton(onClick) {
-                        Icon(ImageVector.vectorResource(icon), contentDescription)
-                    }
-                }
+            Box(Modifier.fillMaxHeight(), Alignment.CenterStart) {
+                icons()
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -66,6 +62,25 @@ fun TopAppBar(
 
                 description?.run {
                     BodyText(description, Modifier.heightIn(max = 60.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TopAppBar(
+    title: String?,
+    description: String? = null,
+    navIcon: AppBarNavIcon? = null,
+    modifier: Modifier = Modifier
+) {
+
+    TopAppBar(title, description, modifier) {
+        navIcon?.run {
+            Box(Modifier.fillMaxHeight(), Alignment.CenterStart) {
+                IconButton(onClick) {
+                    Icon(ImageVector.vectorResource(icon), contentDescription)
                 }
             }
         }

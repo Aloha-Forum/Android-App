@@ -1,5 +1,6 @@
 package app.aloha.di
 
+import app.aloha.internet.service.AvatarApiService
 import app.aloha.internet.service.CommentApiService
 import app.aloha.internet.service.PostApiService
 import app.aloha.internet.service.TopicApiService
@@ -44,5 +45,10 @@ class ApiModule {
     @Provides
     fun provideCommentApi(retrofit: Retrofit): CommentApiService {
         return retrofit.create(CommentApiService::class.java)
+    }
+
+    @Provides
+    fun provideAvatarApi(retrofit: Retrofit): AvatarApiService {
+        return retrofit.create(AvatarApiService::class.java)
     }
 }
