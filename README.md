@@ -15,4 +15,6 @@
 
 ## Showcase
 
-[![](https://img.youtube.com/vi/_wkU4PypZ1s/maxresdefault.jpg)](https://youtube.com/watch?v=_wkU4PypZ1s)
+https://github.com/user-attachments/assets/7e4c8a6e-e4af-418a-88d8-7bc3f33152e9
+
+
